@@ -1,0 +1,9 @@
+{
+    "version": 1,
+    "sdk": "/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk",
+    "toolchain-bin-dir": "/Library/Developer/CommandLineTools/usr/bin",
+    "target": "x86_64-apple-macosx13.0",
+    "extra-cc-flags": [],
+    "extra-swiftc-flags": [],
+    "extra-cpp-flags": []
+}

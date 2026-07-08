@@ -1,0 +1,68 @@
+//
+//  Rosetta2.swift
+//  Whisky
+//
+//  This file is part of Whisky.
+//
+//  Whisky is free software: you can redistribute it and/or modify it under the terms
+//  of the GNU General Public License as published by the Free Software Foundation,
+//  either version 3 of the License, or (at your option) any later version.
+//
+//  Whisky is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+//  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with Whisky.
+//  If not, see https://www.gnu.org/licenses/.
+//
+
+import Foundation
+import os.log
+
+public class Rosetta2 {
+    private static let rosetta2RuntimeBin = "/Library/Apple/usr/libexec/oah/libRosettaRuntime"
+
+    public static let isRosettaInstalled: Bool = {
+        #if arch(x86_64)
+        // Rosetta is not needed on Intel — always report as installed
+        return true
+        #else
+        return FileManager.default.fileExists(atPath: rosetta2RuntimeBin)
+        #endif
+    }()
+
+    public static func installRosetta() async throws -> Bool {
+        #if arch(x86_64)
+        // No-op on Intel — Rosetta is an Apple Silicon concept
+        return true
+        #else
+        let process = Process()
+        let fileHandle = try Wine.makeFileHandle()
+
+        process.launchPath = "/usr/sbin/softwareupdate"
+        process.arguments = ["--install-rosetta", "--agree-to-license"]
+        process.standardOutput = fileHandle
+        process.standardError = fileHandle
+        fileHandle.writeApplicaitonInfo()
+        fileHandle.writeInfo(for: process)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            process.terminationHandler = { (process: Process) in
+                do {
+                    try fileHandle.close()
+                    continuation.resume(returning: process.terminationStatus == 0)
+                } catch {
+                    Logger.wineKit.error("Error while closing file handle: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }
+
+            do {
+                try process.run()
+            } catch {
+                continuation.resume(throwing: error)
+            }
+        }
+        #endif
+    }
+}
