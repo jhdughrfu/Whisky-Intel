@@ -15,7 +15,7 @@ The following modifications have been made to build and run the project as a Uni
 
 Because core features of the Game Porting Toolkit and D3DMetal are designed for Apple Silicon, there are several limitations when running this application on an Intel Mac:
 
-1. **cabextract Binary**: The bundled version of `cabextract` in `Libraries/cabextract` is an ARM64-only binary. Features in Winetricks that depend on `cabextract` will fail on Intel Macs unless you install an Intel-compatible version manually (such as through Homebrew using `brew install cabextract`).
+1. **cabextract Binary**: The bundled version of `cabextract` in `Libraries/cabextract` is an ARM64-only binary. Features in Winetricks that depend on `cabextract` will fail on Intel Macs unless you install an Intel-compatible version manually (such as through Homebrew using `brew install cabextract`). Note: this has already been done for you. 
 2. **D3DMetal Support**: Apple's `D3DMetal` API translator is optimized for Apple Silicon GPUs. On Intel Macs, you will need to rely on alternative translation layers like DXVK, and performance will be significantly degraded.
 3. **Experimental Compatibility**: Intel support is experimental. While basic application installation and launching have been tested, compatibility and performance vary significantly.
 
