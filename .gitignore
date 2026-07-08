@@ -94,3 +94,7 @@ iOSInjectionProject/
 # Custom build directories for Intel configurations
 .build-intel/
 .build-tools/
+
+# Built application bundle copied to root
+/Whisky.app/
+/Whisky.zip
